@@ -9,13 +9,13 @@ class CreateSimulation(BaseModel):
 
     @model_validator(mode="after")
     def check_nr_simulations(self) -> 'CreateSimulation':
-        if self.nr_simulations == 0:
-            raise ValueError('o número de simulações deve ser maior que 0.')
+        if (self.nr_simulations < 100 or self.nr_simulations > 10000) :
+            raise ValueError('O número de simulações é inválido. O número de simulações deve ser entre 100 a 10.000 simulações.')
         return self
 
     @model_validator(mode="after")
     def check_backlog_min(self) -> 'CreateSimulation':
-        if self.backlog_min == 0:
+        if self.backlog_min <= 0:
             raise ValueError('o backlog mínimo deve ser maior que 0.')
         return self
 
