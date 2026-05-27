@@ -1,5 +1,5 @@
 import pytest
-from forecast import Forecast
+from app.services.forecast import Forecast
 
 def test_forecast_init():
     f = Forecast(nr_simulations=10, backlog_min=5, backlog_max=10, throughput=[1,2,3,4])

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
-from models.models import CreateSimulation
+from app.models.models import CreateSimulation
 from typing import Dict
-from services.forecast import Forecast
+from app.services.forecast import Forecast
 
 
 # instanciar classe para criação da API
