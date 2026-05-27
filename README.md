@@ -33,7 +33,7 @@ Esta aplicação realiza simulações de Monte Carlo para prever o número de se
    ```bash
    docker-compose up --build
    ```
-   O servidor estará disponível em [http://localhost:8000](http://localhost:8000).
+   O servidor estará disponível em [http://localhost:8000]
 
 ### Usando Python localmente
 

@@ -11,7 +11,7 @@ forecast_router = APIRouter(prefix="/forecast", tags=["forecast"])
 
 # Endpoints
 
-@forecast_router.post("/create-simulation")
+@forecast_router.post("/run-forecast")
 async def create_simulation(new_simulation: CreateSimulation) -> dict:
 
     forecast = Forecast(
