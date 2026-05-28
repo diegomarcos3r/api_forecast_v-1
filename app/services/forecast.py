@@ -15,7 +15,21 @@ class Forecast:
         self.backlog_max = backlog_max
         self.throughput = throughput
 
-    def run_simulation(self) -> List[int]:
+    def run_forecast(self) -> dict:
+        """
+        Orquestrar a simulação monte carlo e processamento dos resultados.
+        """
+        forecast_weeks = self.run_simulations()
+        percentiles = self.calculate_percentiles(forecast_weeks,[50,75,85,95])
+        response = self.format_forecast_response(
+        p50=percentiles[50],
+        p75=percentiles[75],
+        p85=percentiles[85],
+        p95=percentiles[95]
+        )
+        return response
+
+    def run_simulations(self) -> List[int]:
 
         """
             Rodar uma simulação monte carlo.
