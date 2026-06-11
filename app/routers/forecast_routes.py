@@ -18,6 +18,7 @@ async def create_simulation(new_simulation: CreateSimulation) -> dict:
         nr_simulations = new_simulation.nr_simulations,
         backlog_min = new_simulation.backlog_min,
         backlog_max = new_simulation.backlog_max,
+        capacity = new_simulation.capacity,
         throughput = new_simulation.throughput
     )
 

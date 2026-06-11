@@ -9,27 +9,42 @@ class Forecast:
     Classe para simulação de Monte Carlo de previsão de semanas para concluir o backlog.
     """
 
-    def __init__(self, nr_simulations: int, backlog_min: int, backlog_max:int, throughput: List[int]):
+    def __init__(self, nr_simulations: int, backlog_min: int, backlog_max:int, capacity:int, throughput: List[int]):
         self.nr_simulations = nr_simulations
         self.backlog_min = backlog_min
         self.backlog_max = backlog_max
+        self.capacity = capacity
         self.throughput = throughput
+
+
 
     def run_forecast(self) -> dict:
         """
         Orquestrar a simulação monte carlo e processamento dos resultados.
         """
-        forecast_weeks = self.run_simulations()
+        throughput_forecast = self.get_capacity_throughput()
+        forecast_weeks = self.run_simulations(throughput_forecast)
         percentiles = self.calculate_percentiles(forecast_weeks,[50,75,85,95])
         response = self.format_forecast_response(
+        throughput_forecast=throughput_forecast,
         p50=percentiles[50],
         p75=percentiles[75],
         p85=percentiles[85],
         p95=percentiles[95]
         )
         return response
+    
+    def get_capacity_throughput(self) -> List:
+        throughput = self.throughput
+        if self.capacity == 100:
+            return throughput
+        
+        capacity_percentage = self.capacity / 100 
 
-    def run_simulations(self) -> List[int]:
+        capacity_throughput = [round(week * capacity_percentage) for week in throughput]
+        return capacity_throughput
+
+    def run_simulations(self, throughput_forecast) -> List[int]:
 
         """
             Rodar uma simulação monte carlo.
@@ -43,7 +58,7 @@ class Forecast:
             backlog = np.random.randint(self.backlog_min, self.backlog_max + 1)
 
             while backlog_done < backlog:
-                random_throughput = np.random.choice(self.throughput)
+                random_throughput = np.random.choice(throughput_forecast)
                 backlog_done = random_throughput + backlog_done
                 random_weeks = random_weeks + 1
 
@@ -64,7 +79,7 @@ class Forecast:
     
         return {p: int(np.percentile(forecast_weeks, p)) for p in percentiles}
 
-    def format_forecast_response(self,p50:int,p75:int,p85:int,p95:int) -> dict:
+    def format_forecast_response(self, throughput_forecast: List[int], p50:int, p75:int, p85:int, p95:int) -> dict:
 
         """
             Estruturar a resposta da requisição do cliente.
@@ -74,7 +89,7 @@ class Forecast:
         
             'Backlog-min': self.backlog_min,
             'Backlog-max':self.backlog_max,
-            'Throughput':self.throughput,
+            'Throughput-Forecast': throughput_forecast,
             'Simulations':self.nr_simulations,
             'Percentil-50':p50,
             'Percentil-75':p75,

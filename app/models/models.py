@@ -5,6 +5,7 @@ class CreateSimulation(BaseModel):
     nr_simulations: int
     backlog_min: int
     backlog_max: int
+    capacity: int
     throughput: list[int]
 
     @model_validator(mode="after")
@@ -24,6 +25,11 @@ class CreateSimulation(BaseModel):
     def check_backlog_max(self) -> 'CreateSimulation':
         if self.backlog_max < self.backlog_min:
             raise ValueError('o backlog máximo deve ser igual ou maior que o backlog mínimo')
+        return self
+    @model_validator(mode="after")
+    def check_capacity(self) -> 'CreateSimulation':
+        if not self.capacity or self.capacity < 10 or self.capacity > 100:
+            raise ValueError('Preencha o Capacity com um valor entre 10% a 100% .')
         return self
     
     @model_validator(mode="after")
